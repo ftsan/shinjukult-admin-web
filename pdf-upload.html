@@ -1,0 +1,118 @@
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Vue</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="//unpkg.com/vue"></script>
+
+    <script type="text/javascript" src="/js/lib/dummy.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+
+    <style id="compiled-css" type="text/css">
+        body {
+            background: #20262E;
+            padding: 20px;
+            font-family: Helvetica;
+        }
+        
+        #app {
+            margin: auto;
+            max-width: 600px;
+            padding: 20px;
+        }
+        
+        section {
+            padding: 40px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        h2 {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        del {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        
+        section div {
+            margin: 16px 0;
+        }
+    </style>
+
+
+    <!-- TODO: Missing CoffeeScript 2 -->
+
+    <script type="text/javascript">
+        window.onload = function() {
+
+            new Vue({
+                el: "#app",
+                data: {
+                    todos: [{
+                        text: "Learn JavaScript",
+                        done: false
+                    }, {
+                        text: "Learn Vue",
+                        done: false
+                    }, {
+                        text: "Play around in JSFiddle",
+                        done: true
+                    }, {
+                        text: "Build something awesome",
+                        done: true
+                    }]
+                },
+                methods: {
+                    selectFile: function() {
+                        document.getElementById('slide_file').click()
+                    }
+                }
+            })
+
+        }
+    </script>
+
+</head>
+
+<body>
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <div id="app">
+        <section class="form nes-container with-title">
+            <h2 class="title">PDF upload</h2>
+            <div class="nes-field"><label for="name_text">Your name</label> <input type="text" id="name_text" placeholder="名前" class="nes-input"></div>
+            <div class="nes-field"><label for="title_text">Title</label> <input type="text" id="title_text" placeholder="タイトル" class="nes-input"></div>
+            <div class="nes-field"><label for="slide_file">Slide</label> <button id="file_button" class="nes-btn">ファイルを選択する</button>
+                <input type="file" id="slide_file" class="nes-btn" style="display: none;"></div>
+            <div class="nes-field"><button id="submit_button" class="nes-btn">送信</button></div>
+        </section>
+    </div>
+
+
+
+    <script>
+        // tell the embed parent frame the height of the content
+        if (window.parent && window.parent.parent) {
+            window.parent.parent.postMessage(["resultsFrame", {
+                height: document.body.getBoundingClientRect().height,
+                slug: "gwh9mkb6"
+            }], "*")
+        }
+    </script>
+
+
+</body>
+
+</html>

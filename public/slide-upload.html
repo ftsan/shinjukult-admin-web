@@ -3,19 +3,9 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Vue</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <script type="text/javascript" src="//unpkg.com/vue"></script>
-
-    <script type="text/javascript" src="/js/lib/dummy.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
-
-    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
-
-
     <style id="compiled-css" type="text/css">
         body {
             background: #20262E;
@@ -51,68 +41,69 @@
         }
     </style>
 
-
-    <!-- TODO: Missing CoffeeScript 2 -->
-
-    <script type="text/javascript">
-        window.onload = function() {
-
-            new Vue({
-                el: "#app",
-                data: {
-                    todos: [{
-                        text: "Learn JavaScript",
-                        done: false
-                    }, {
-                        text: "Learn Vue",
-                        done: false
-                    }, {
-                        text: "Play around in JSFiddle",
-                        done: true
-                    }, {
-                        text: "Build something awesome",
-                        done: true
-                    }]
-                },
-                methods: {
-                    selectFile: function() {
-                        document.getElementById('slide_file').click()
-                    }
-                }
-            })
-
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 
 </head>
 
 <body>
-    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <div id="app">
         <section class="form nes-container with-title">
             <h2 class="title">PDF upload</h2>
-            <div class="nes-field"><label for="name_text">Your name</label> <input type="text" id="name_text" class="nes-input" placeholder="Ex: ftsan"></div>
-            <div class="nes-field"><label for="title_text">Title</label> <input type="text" id="title_text" class="nes-input" placeholder="Ex: LTで宗教画を使ったらバチカンに告訴された件"></div>
-            <div class="nes-field"><label for="date_text">日付</label> <input type="date" id="date_text" class="nes-input"></div>
-            <div class="nes-field"><label for="slide_file">Slide</label> <button id="file_button" class="nes-btn" @click="selectFile()">ファイルを選択する</button>
-                <input type="file" id="slide_file" class="nes-btn" style="display: none;"></div>
-            <div class="nes-field"><button id="submit_button" class="nes-btn is-primary">送信</button></div>
+            <div class="nes-field"><label for="name_text">Your name</label> <input v-model="name" type="text" id="name_text" class="nes-input" placeholder="Ex: ftsan"></div>
+            <div class="nes-field"><label for="title_text">Title</label> <input v-model="title" type="text" id="title_text" class="nes-input" placeholder="Ex: LTで宗教画を使ったらバチカンに告訴された件"></div>
+            <div class="nes-field"><label for="date_text"></label><input v-model="date" type="date" id="date_text" class="nes-input"></div>
+            <div class="nes-field"><label for="slide_file">Slide</label><button id="file_button" class="nes-btn" v-on:click="selectFile">ファイルを選択する</button>
+                <input type="file" id="slide_file" class="nes-btn" style="display: none;" v-on:change="onFileChange"></div>
+            <div class="nes-field"><button id="submit_button" class="nes-btn is-primary" v-on:click="upload">送信</button></div>
         </section>
     </div>
 
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            data: {
+                name: null,
+                title: null,
+                date: null,
+                slide: null
+            },
+            methods: {
+                selectFile: function() {
+                    document.getElementById('slide_file').click();
+                },
+                onFileChange: function(e) {
+                    console.log(e);
+                    const files = e.target.files || e.dataTransfer.files;
+                    if (!files.length) {
+                        return;
+                    }
+                    console.log(files);
+                    this.slide = files[0];
+                },
+                upload: function() {
+                    const params = new FormData();
+                    const url = 'https://shinjuku-lt-backend.now.sh/upload-pdf';
 
-
-    <script>
-        // tell the embed parent frame the height of the content
-        if (window.parent && window.parent.parent) {
-            window.parent.parent.postMessage(["resultsFrame", {
-                height: document.body.getBoundingClientRect().height,
-                slug: "gwh9mkb6"
-            }], "*")
-        }
+                    params.append('upFile', this.slide);
+                    params.append('title', this.title);
+                    params.append('presenter', this.name);
+                    params.append('date', moment(this.date));
+                    console.log(params);
+                    axios.post(url, params)
+                        .then(function(response) {
+                            console.log(response);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                }
+            }
+        })
     </script>
-
 
 </body>
 

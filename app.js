@@ -6,5 +6,4 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => console.log("Node.js is listening to PORT:" + PORT));
 
-app.use(auth);
 app.use(express.static('public'));

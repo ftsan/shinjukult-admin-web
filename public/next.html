@@ -1,0 +1,134 @@
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Vue</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style id="compiled-css" type="text/css">
+        body {
+            background: #20262E;
+            padding: 20px;
+            font-family: Helvetica;
+        }
+        
+        #app {
+            margin: auto;
+            max-width: 700px;
+            padding: 20px;
+        }
+        
+        section {
+            padding: 40px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        h2 {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        del {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        
+        section div {
+            margin: 16px 0;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+    <script type="text/javascript">
+        window.onload = function() {
+
+            new Vue({
+                el: "#app",
+                data: {
+                    datetime: null,
+                    company: null,
+                    companyLink: null,
+                    address: null,
+                    map: null,
+                    calendar: null,
+                    schedules: [{
+                        time: null,
+                        content: null
+                    }]
+                },
+                methods: {
+                    addSchedule: function(e) {
+                        this.schedules.push({
+                            time: null,
+                            content: null
+                        });
+                    },
+                    register: function() {
+                        const url = 'https://shinjuku-lt-backend.now.sh/next'
+                        const nextDate = moment(this.datetime)
+                        axios.put(url, {
+                                'nextTime': {
+                                    'date': nextDate.date(),
+                                    'month': nextDate.month() + 1,
+                                    'year': nextDate.year()
+                                },
+                                'place': {
+                                    'company': this.company,
+                                    'companyLink': this.companyLink,
+                                    'address': this.address
+                                },
+                                'google': {
+                                    'map': this.map,
+                                    'calendar': this.calendar
+                                },
+                                'schedule': this.schedules
+                            })
+                            .then(res => console.log(res))
+                            .catch(err => console.error(err))
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <section class="form nes-container with-title">
+            <h2 class="title">Next Shinjuku LT</h2>
+            <div class="nes-container with-title">
+                <h2 class="title">Event date</h2>
+                <div class="nes-field"><label for="next-date_date">Next time</label><input v-model="datetime" type="date" id="next-date_date" name="nextDate" class="nes-input"></div>
+            </div>
+            <div class="nes-container with-title">
+                <h2 class="title">Place</h2>
+                <div class="nes-field"><label for="title_text">Venue</label> <input v-model="company" type="text" id="venue_text" name="venue" placeholder="Ex: 株式会社新宿軽量会話" class="nes-input"></div>
+                <div class="nes-field"><label for="title_text">Copy link</label> <input v-model="companyLink" type="text" id="copy-link_text" name="copyLink" placeholder="Ex: https://shinjukult.netrify.com/" class="nes-input"></div>
+                <div class="nes-field"><label for="copy-link_text">Address</label> <input v-model="address" type="text" id="address_text" name="address" placeholder="Ex: 東京都港区六本木6丁目11-1 六本木ヒルズ" class="nes-input"></div>
+                <div class="nes-field"><label for="copy-map_text">Map</label> <input v-model="map" type="text" id="map_text" name="map" class="nes-input"></div>
+                <div class="nes-field"><label for="calendar_text">Calendar</label><input v-model="calendar" type="text" id="calendar_text" name="calendar" class="nes-input"></div>
+            </div>
+            <div class="nes-container with-title">
+                <h2 class="title">
+                    Schedule
+                </h2>
+                <div v-for="schedule in schedules">
+                    <div class="nes-field"><input v-model="schedule.time" type="time" id="start-time_time" name="startTime" class="nes-input"></div>
+                    <div class="nes-field"><input v-model="schedule.content" type="text" id="content_text" name="content_text" class="nes-input"></div>
+                </div>
+                <button type="button" v-on:click="addSchedule">スケジュールを追加</button>
+            </div>
+            <div class="nes-field"><button id="submit_button" class="nes-btn is-primary" type="button" v-on:click="register">送信</button></div>
+        </section>
+    </div>
+</body>
+
+</html>

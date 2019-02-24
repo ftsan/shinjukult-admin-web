@@ -1,0 +1,108 @@
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Vue</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style id="compiled-css" type="text/css">
+        body {
+            background: #20262E;
+            padding: 20px;
+            font-family: Helvetica;
+        }
+        
+        #app {
+            margin: auto;
+            max-width: 600px;
+            padding: 20px;
+        }
+        
+        section {
+            padding: 40px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        h2 {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        del {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        
+        section div {
+            margin: 16px 0;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="https://unpkg.com/nes.css/css/nes.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="app">
+        <section class="form nes-container with-title">
+            <h2 class="title">PDF upload</h2>
+            <div class="nes-field"><label for="name_text">Your name</label> <input v-model="presenter" type="text" id="name_text" class="nes-input" placeholder="Ex: ftsan"></div>
+            <div class="nes-field"><label for="date_text">Date</label><input v-model="publishDate" type="date" id="date_text" class="nes-input"></div>
+            <div class="nes-field"><label for="url_text">URL</label><input v-model="presentationUrl" type="text" id="url_text" class="nes-input"></div>
+            <div><label>
+                    <input v-model="serviceType" type="radio" class="nes-radio" name="answer" value="slideshare"
+                        checked>
+                    <span>SlideShare</span>
+                </label>
+                <label>
+                    <input v-model="serviceType" type="radio" class="nes-radio" name="answer" value="speakerdeck">
+                    <span>Speaker Deck</span>
+                </label>
+
+                <div class="nes-field"><button id="submit_button" class="nes-btn is-primary" v-on:click="upload" type="button">送信</button></div>
+        </section>
+        </div>
+
+        <script type="text/javascript">
+            new Vue({
+                el: "#app",
+                data: {
+                    "publishDate": "",
+                    "presentationUrl": "",
+                    "presenter": "",
+                    "serviceType": ""
+                },
+                methods: {
+                    upload: function(event) {
+                        axios.post('https://shinjuku-lt-backend.now.sh/slide', {
+                                'publish': {
+                                    'month': moment(this.publishDate).month() + 1,
+                                    'year': moment(this.publishDate).year()
+                                },
+                                'presentation': {
+                                    'presentationUrl': this.presentationUrl,
+                                    'presenter': this.presenter,
+                                    'serviceType': this.serviceType
+                                }
+                            })
+                            .then(function(response) {
+                                console.log(response);
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            });
+                    }
+                }
+            })
+        </script>
+
+
+</body>
+
+</html>
